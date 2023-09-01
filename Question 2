@@ -1,0 +1,66 @@
+
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+#white matter = [200,255]
+# gray matter = [100,200]  
+
+img = cv.imread('BrainProtonDensitySlice9.png', cv.IMREAD_GRAYSCALE)
+assert img is not None, "file could not be read, check with os.path.exists()"
+
+t1 = np.linspace(0,200,201).astype('uint8')
+print(len(t1))
+t2 = np.linspace(0,0,55).astype('uint8')
+print(len(t2))
+t3 = np.linspace(0,100,101).astype('uint8')
+print(len(t3))
+t4 = np.linspace(255,255,100).astype('uint8')
+print(len(t4))
+t5 = np.linspace(201,255,55).astype('uint8')
+print(len(t5))
+
+
+transform1 = np.concatenate((t1,t2), axis = 0).astype('uint8')
+transform2 = np.concatenate((t3,t4), axis = 0).astype('uint8')
+transform2 = np.concatenate((transform2,t5), axis = 0).astype('uint8')
+
+fig , ax = plt.subplots()
+ax.plot(transform1)
+ax.set_xlabel(r'Input , $f(\mathbf{x})$')
+ax.set_ylabel('Output , $\mathrm{T}[f(\mathbf{x})]$')
+ax.set_xlim(0,255)
+ax.set_ylim(0,255)
+ax.set_aspect('equal')
+plt.show()
+
+img_transformed1 = cv.LUT(img,transform1)#transform[img_org]
+ 
+
+fig , ax = plt.subplots(1,2)
+ax[0].imshow(img, cmap = 'gray', vmin = 0, vmax = 255)
+ax[0].set_title('Original')
+ax[0].axis('off') 
+ax[1].imshow(img_transformed1, cmap = 'gray', vmin = 0, vmax = 255)
+ax[1].set_title('white mat acc')
+ax[1].axis('off') 
+
+fig , ax = plt.subplots()
+ax.plot(transform2)
+ax.set_xlabel(r'Input , $f(\mathbf{x})$')
+ax.set_ylabel('Output , $\mathrm{T}[f(\mathbf{x})]$')
+ax.set_xlim(0,255)
+ax.set_ylim(0,255)
+ax.set_aspect('equal')
+plt.show()
+
+img_transformed2 = cv.LUT(img,transform2)#transform[img_org]
+ 
+
+fig , ax = plt.subplots(1,2)
+ax[0].imshow(img, cmap = 'gray', vmin = 0, vmax = 255)
+ax[0].set_title('Original')
+ax[0].axis('off') 
+ax[1].imshow(img_transformed2, cmap = 'gray', vmin = 0, vmax = 255)
+ax[1].set_title('gray mat acc')
+ax[1].axis('off')
