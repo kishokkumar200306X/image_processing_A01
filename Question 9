@@ -2,9 +2,8 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Load the image
-image_path = "flower.jpg"  # Replace with the path to your image
-image = cv.imread(image_path)
+
+image =  cv.imread( "flower.jpg")
 
 # Create an empty mask for GrabCut
 mask = np.zeros(image.shape[:2], np.uint8)
@@ -40,7 +39,7 @@ plt.subplot(133), plt.imshow(background_image), plt.title('Background Image')
 plt.show()
 
 # Create a blurred background by applying a Gaussian blur
-background = cv.GaussianBlur(image, (0, 0), 20)  # You can adjust the blur level (20 in this example)
+background = cv.GaussianBlur(image, (0, 0), 20) 
 
 
 # Combine the foreground and blurred background
