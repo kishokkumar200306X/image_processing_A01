@@ -1,0 +1,64 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+img = cv.imread('einstein.png', cv.IMREAD_REDUCED_GRAYSCALE_2)
+
+
+kernel = np.array([(1,0,-1),(2,0,-2),(1,0,-1)], dtype='float')
+img_filtter2D1 = cv.filter2D(img,-1,kernel)
+
+fig , axes = plt.subplots(1,2, sharex ='all',sharey='all')
+axes[0].imshow(img, cmap = 'gray')
+axes[0].set_title('original')
+axes[0].set_xticks([]), axes[0].set_yticks([])
+axes[1].imshow(img_filtter2D1, cmap = 'gray')
+axes[1].set_title('sobel horizontal')
+axes[1].set_xticks([]), axes[1].set_yticks([])
+plt.show()
+
+
+def filter(im,kernel):
+    assert kernel.shape[0]%2 == 1 and kernel.shape[1]%2==1
+    k_height, k_width = math.floor(kernel.shape[0]/2), math.floor(kernel.shape[1]/2)
+    h , w = im.shape
+    # im_float = cv.normalize(im.astype('float'), None,0.0,1.0,cv.NORM_MINMAX)
+    result = np.zeros(im.shape,'float')
+
+    for r in range (k_height,h-k_height):
+        for k in range(k_width,w - k_width):
+            result[r,k] = np.dot(im[r-k_height:r+k_height+1,k-k_width:k+k_width+1].flatten(),kernel.flatten())
+    return result
+
+
+kernel_01 = np.array([(1,0,-1),(2,0,-2),(1,0,-1)], dtype='float')
+
+img_filter_2D = filter(img,kernel_01)
+
+
+fig , axes = plt.subplots(1,1, sharex ='all',sharey='all')
+
+
+axes.imshow(img_filter_2D, cmap = 'gray')
+axes.set_title('sobel horizontal')
+axes.set_xticks([]), axes.set_yticks([])
+plt.show()
+
+A = [[1],
+      [2],
+         [1]]
+      
+B = [[1,0,-1]]
+
+kernel_03 = np.dot(A,B)
+print(kernel_03)
+img_filter2D = filter(img,kernel_03)
+
+
+fig , axes = plt.subplots(1,1, sharex ='all',sharey='all')
+
+axes.imshow(img_filter2D, cmap = 'gray')
+axes.set_title('sobel horizontal c')
+axes.set_xticks([]), axes.set_yticks([])
+plt.show()
