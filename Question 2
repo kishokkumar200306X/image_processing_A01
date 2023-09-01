@@ -1,0 +1,33 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+
+gamma = 0.5
+img = cv.imread('highlights_and_shadows.jpg')
+
+lab_img = cv.cvtColor(img, cv.COLOR_BGR2Lab)
+l = lab_img[:,:,0]
+
+hist , bins = np.histogram(img.ravel(),256,[0,256])
+
+plt.hist(img.flatten(),256,[0,256], color ='r')
+plt.xlim([0,256])
+plt.legend(('cdf', 'histogram'), loc = 'upper left')
+plt.title('histogram of original image')
+plt.show()
+
+
+t = np.array([(i/255.0)**(gamma)*255 for i in np.arange(0,256)]).astype('uint8')
+g = cv.LUT(l,t)
+
+
+corrected_img = cv.cvtColor(lab_img,cv.COLOR_Lab2LRGB)
+hist, bins = np.histogram(g.ravel(),256,[0,256])
+
+plt.hist(g.flatten(),256,[0,256], color ='r')
+plt.xlim([0,256])
+plt.legend(('cdf', 'histogram'), loc = 'upper left')
+plt.title('histogram after gamma correction')
+plt.show()
+
+
