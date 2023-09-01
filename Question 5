@@ -1,0 +1,47 @@
+
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+img = cv.imread('shells.tif', cv.IMREAD_GRAYSCALE)
+
+def histogram_equalization(image):
+    # Compute histogram
+    histogram, _ = np.histogram(image, bins=256, range=(0, 256))
+    histogram = histogram / float(image.size)
+
+    # Calculate cumulative distribution function (CDF)
+    cdf = histogram.cumsum()
+
+    # Scale CDF to the range [0, 255]
+    cdf_scaled = (cdf - cdf.min()) * 255 / (cdf.max() - cdf.min())
+    cdf_scaled = cdf_scaled.astype(np.uint8)
+
+    # Map the values of the original image to the equalized values
+    equalized_image = cdf_scaled[image]
+
+    return equalized_image
+
+hist , bins = np.histogram(img.ravel(),256,[0,256])
+
+plt.hist(img.flatten(),256,[0,256], color ='r')
+plt.xlim([0,256])
+plt.legend(('cdf', 'histogram'), loc = 'upper left')
+plt.title('histogram of original image')
+plt.show()
+
+# equ = cv.equalizeHist(img)
+equ = histogram_equalization(img)
+hist, bins = np.histogram(equ.ravel(),256,[0,256])
+
+plt.hist(equ.flatten(),256,[0,256], color ='r')
+plt.xlim([0,256])
+plt.legend(('cdf', 'histogram'), loc = 'upper left')
+plt.title('histogram of equalized image')
+plt.show()
+
+res = np.hstack((img,equ))
+plt.axis('off')
+plt.imshow(img, cmap = 'gray')
+plt.imshow(res, cmap = 'gray')
