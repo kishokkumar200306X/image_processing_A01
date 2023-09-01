@@ -1,0 +1,42 @@
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
+
+img = cv.imread('spider.png', cv.IMREAD_COLOR)
+img_org = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV) # chge the bgr plnae to hsv
+
+
+a = 0.8
+sigma = 70
+# internsity transformatio funtion
+def intensity_transformation(x):
+    return np.minimum(a * 128 * np.exp(-((x - 128) ** 2) / (2 * sigma ** 2)), 255)
+
+enhanced_saturation = intensity_transformation(hsv[:,:, 1])
+
+# Update the saturation plane with the enhanced values
+hsv[:,:, 1] = enhanced_saturation
+img2 = cv.cvtColor(hsv,cv.COLOR_HSV2RGB)
+fig , ax = plt.subplots(1,2, figsize = (10,10))
+ax[0].imshow(img_org, cmap = 'gray', vmin = 0, vmax = 255)
+ax[0].set_title('original')
+ax[0].axis('off') 
+
+ax[1].imshow(img2, cmap = 'gray', vmin = 0, vmax = 255)
+ax[1].set_title('enhanced')
+ax[1].axis('off') 
+plt.show()
+
+
+x_values = np.arange(0, 256, 1)
+
+y_values = intensity_transformation(x_values)
+
+plt.plot(x_values, y_values,'y', label='Intensity Transformation')
+plt.xlabel('Input Intensity (x)')
+plt.ylabel('Transformed Intensity')
+plt.title('Intensity Transformation Function')
+plt.legend()
+plt.show()
+print(img.size)
